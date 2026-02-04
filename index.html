@@ -133,23 +133,23 @@
       <div class="grid" style="margin-top: 12px;">
         <label>
           Flat area
-          <input type="number" id="flatArea" value="0" min="0" step="0.01" />
+          <input type="number" id="flatArea" value="0" readonly />
         </label>
         <label>
           Commercial area
-          <input type="number" id="commercialArea" value="0" min="0" step="0.01" />
+          <input type="number" id="commercialArea" value="0" readonly />
         </label>
         <label>
           Airs area
-          <input type="number" id="airsArea" value="0" min="0" step="0.01" />
+          <input type="number" id="airsArea" value="0" readonly />
         </label>
         <label>
           Stairs area
-          <input type="number" id="stairsArea" value="0" min="0" step="0.01" />
+          <input type="number" id="stairsArea" value="0" readonly />
         </label>
         <label>
           Parking area
-          <input type="number" id="parkingArea" value="0" min="0" step="0.01" />
+          <input type="number" id="parkingArea" value="0" readonly />
         </label>
       </div>
       <div class="grid" style="margin-top: 12px;">
@@ -175,11 +175,11 @@
       <div class="grid" style="margin-top: 12px;">
         <label>
           G&amp;A costs incl. marketing
-          <input type="number" id="gaCosts" value="0" min="0" step="0.01" />
+          <input type="number" id="gaCosts" value="0" readonly />
         </label>
         <label>
           Interest expenses
-          <input type="number" id="interestExpenses" value="0" min="0" step="0.01" />
+          <input type="number" id="interestExpenses" value="0" readonly />
         </label>
       </div>
     </section>
@@ -193,7 +193,7 @@
         </label>
         <label>
           Commercial price
-          <input type="number" id="commercialPrice" value="1400" min="0" step="0.01" />
+          <input type="number" id="commercialPrice" value="1400" readonly />
         </label>
         <label>
           Parking price
@@ -237,7 +237,7 @@
         </label>
         <label>
           Developer profit rate
-          <input type="number" id="developerProfitRate" value="30" min="0" step="0.01" />
+          <input type="number" id="developerProfitRate" value="0.3" min="0" step="0.01" />
         </label>
         <label>
           Developer profit figure
@@ -255,11 +255,11 @@
         </label>
         <label>
           Actual land price per m²
-          <input type="number" id="actualLandPricePerM2" value="0" min="0" step="0.01" />
+          <input type="number" id="actualLandPricePerM2" value="0" readonly />
         </label>
         <label>
           Actual land MV
-          <input type="number" id="actualLandMv" value="0" readonly />
+          <input type="number" id="actualLandMv" value="0" min="0" step="0.01" />
         </label>
       </div>
       <div class="grid" style="margin-top: 12px;">
@@ -318,14 +318,20 @@
       const buildable = area * k2;
       fields.buildable.value = buildable.toFixed(2);
 
-      const flatArea = toNumber(fields.flatArea.value);
-      const commercialArea = toNumber(fields.commercialArea.value);
-      const airsArea = toNumber(fields.airsArea.value);
-      const stairsArea = toNumber(fields.stairsArea.value);
-      const parkingArea = toNumber(fields.parkingArea.value);
+      const flatArea = buildable * 0.7;
+      const commercialArea = buildable * 0.1;
+      const airsArea = buildable * 0.15;
+      const stairsArea = buildable * 0.15;
+      const parkingArea = flatArea === 0 ? 0 : flatArea / 150;
+
+      fields.flatArea.value = flatArea.toFixed(2);
+      fields.commercialArea.value = commercialArea.toFixed(2);
+      fields.airsArea.value = airsArea.toFixed(2);
+      fields.stairsArea.value = stairsArea.toFixed(2);
+      fields.parkingArea.value = parkingArea.toFixed(2);
 
       const totalBuildingArea =
-        flatArea + commercialArea + airsArea + stairsArea + parkingArea;
+        flatArea + commercialArea + airsArea + parkingArea * 25;
       fields.totalBuildingArea.value = totalBuildingArea.toFixed(2);
 
       const costsPerM2 = toNumber(fields.costsPerM2.value);
@@ -333,8 +339,10 @@
       fields.constructionCosts.value = constructionCosts.toFixed(2);
 
       const flatPrice = toNumber(fields.flatPrice.value);
-      const commercialPrice = toNumber(fields.commercialPrice.value);
+      const commercialPrice = flatPrice;
       const parkingPrice = toNumber(fields.parkingPrice.value);
+
+      fields.commercialPrice.value = commercialPrice.toFixed(2);
 
       const flatRevenue = flatArea * flatPrice;
       const commercialRevenue = commercialArea * commercialPrice;
@@ -350,41 +358,35 @@
       const profit = totalRevenue - constructionCosts;
       fields.profit.value = profit.toFixed(2);
 
-      const gaCosts = toNumber(fields.gaCosts.value);
-      const interestExpenses = toNumber(fields.interestExpenses.value);
-      const developmentProfitTotal = profit - gaCosts - interestExpenses;
+      const gaCosts = totalRevenue * 0.08;
+      const interestExpenses = constructionCosts * 0.1;
+      fields.gaCosts.value = gaCosts.toFixed(2);
+      fields.interestExpenses.value = interestExpenses.toFixed(2);
+      const developmentProfitTotal =
+        (profit - gaCosts - interestExpenses) * 0.7;
       fields.developmentProfitTotal.value = developmentProfitTotal.toFixed(2);
 
-      const developerProfitRate =
-        toNumber(fields.developerProfitRate.value) / 100;
+      const developerProfitRate = toNumber(fields.developerProfitRate.value);
       const developerProfitFigure = developmentProfitTotal * developerProfitRate;
       fields.developerProfitFigure.value = developerProfitFigure.toFixed(2);
 
-      const landValue =
-        totalRevenue -
-        constructionCosts -
-        gaCosts -
-        interestExpenses -
-        developerProfitFigure;
+      const landValue = developmentProfitTotal - developerProfitFigure;
       fields.landValue.value = landValue.toFixed(2);
 
       const landValuePerM2 = area === 0 ? 0 : landValue / area;
       fields.landValuePerM2.value = landValuePerM2.toFixed(2);
 
-      const actualLandPricePerM2 = toNumber(fields.actualLandPricePerM2.value);
-      const actualLandMv = actualLandPricePerM2 * area;
-      fields.actualLandMv.value = actualLandMv.toFixed(2);
+      const actualLandMv = toNumber(fields.actualLandMv.value);
+      const actualLandPricePerM2 = area === 0 ? 0 : actualLandMv / area;
+      fields.actualLandPricePerM2.value = actualLandPricePerM2.toFixed(2);
 
-      const devProfitReal =
-        totalRevenue -
-        constructionCosts -
-        gaCosts -
-        interestExpenses -
-        actualLandMv;
+      const devProfitReal = developmentProfitTotal - actualLandMv;
       fields.devProfitReal.value = devProfitReal.toFixed(2);
 
       const devProfitRealPercent =
-        totalRevenue === 0 ? 0 : (devProfitReal / totalRevenue) * 100;
+        developerProfitFigure === 0
+          ? 0
+          : (devProfitReal / developerProfitFigure - 1) * 100;
       fields.devProfitRealPercent.value = devProfitRealPercent.toFixed(2);
     };
 

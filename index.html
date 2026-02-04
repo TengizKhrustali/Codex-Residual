@@ -3,333 +3,225 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Residual Testing Calculator</title>
+  <title>Residual Model | Professional Edition</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    :root {
-      color-scheme: light;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      --bg: #f6f8fb;
-      --card: #ffffff;
-      --border: #d7dde5;
-      --muted: #6b7280;
-      --accent: #1f6feb;
-    }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: #111827;
-    }
-
-    header {
-      padding: 24px 32px 8px;
-    }
-
-    header h1 {
-      margin: 0 0 8px;
-      font-size: 1.6rem;
-    }
-
-    header p {
-      margin: 0;
-      color: var(--muted);
-    }
-
-    main {
-      padding: 24px 32px 48px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      max-width: 1100px;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
-    }
-
-    .section-title {
-      font-size: 1.1rem;
-      margin: 0 0 12px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-    }
-
-    label {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    input {
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      font-size: 0.95rem;
-    }
-
-    input:not([readonly]) {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 2px rgba(31, 111, 235, 0.1);
-      background: #f9fbff;
-    }
-
-    input[readonly] {
-      background: #eef2f7;
-      color: #111827;
-    }
-
-    .hint {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-top: 8px;
-    }
-
-    .totals {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 16px;
-      margin-top: 12px;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      padding: 6px 12px;
-      border-radius: 999px;
-      background: rgba(31, 111, 235, 0.1);
-      color: var(--accent);
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
-
-    .highlight-value input {
-      background: rgba(31, 111, 235, 0.12);
-      border-color: var(--accent);
-      color: #0f172a;
-      font-weight: 700;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .glass-effect { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+    .card-hover { transition: all 0.2s ease; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+    input[readonly] { cursor: not-allowed; opacity: 0.8; }
   </style>
 </head>
-<body>
-  <header>
-    <h1>Residual Testing</h1>
-    <p>Input project assumptions and review calculated outputs from the residual model.</p>
-  </header>
+<body class="bg-[#f8fafc] text-slate-900 min-h-screen">
 
-  <main>
-    <section class="card">
-      <h2 class="section-title">Costs</h2>
-      <div class="grid">
-        <label>
-          Costs per m²
-          <input type="number" id="costsPerM2" value="300" min="0" step="0.01" />
-        </label>
-        <label>
-          Construction costs
-          <input type="number" id="constructionCosts" value="0" readonly />
-        </label>
+  <nav class="glass-effect sticky top-0 z-50 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
+    <div class="flex items-center gap-2">
+      <div class="bg-blue-600 p-2 rounded-lg text-white">
+        <i data-lucide="building-2" class="w-6 h-6"></i>
       </div>
-      <div class="grid" style="margin-top: 12px;">
-        <label>
-          G&amp;A costs incl. marketing
-          <input type="number" id="gaCosts" value="0" readonly />
-        </label>
-        <label>
-          Interest expenses
-          <input type="number" id="interestExpenses" value="0" readonly />
-        </label>
-      </div>
-    </section>
+      <h1 class="text-xl font-bold tracking-tight">Residual<span class="text-blue-600">Model</span></h1>
+    </div>
+    <div class="flex items-center gap-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+      <span class="flex items-center gap-1 font-bold text-blue-600"><i data-lucide="refresh-cw" class="w-3 h-3"></i> Auto-Sync Active</span>
+      <span class="border-l pl-4 border-slate-300">Project: X</span>
+    </div>
+  </nav>
 
-    <section class="card">
-      <h2 class="section-title">Variables</h2>
-      <div class="grid">
-        <label>
-          Flat price
-          <input type="number" id="flatPrice" value="1400" min="0" step="0.01" />
-        </label>
-        <label>
-          Commercial price
-          <input type="number" id="commercialPrice" value="1400" readonly />
-        </label>
-        <label>
-          Parking price
-          <input type="number" id="parkingPrice" value="6000" min="0" step="0.01" />
-        </label>
-      </div>
-    </section>
+  <main class="max-w-[1400px] mx-auto p-6 lg:p-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <div class="lg:col-span-5 space-y-6">
+        <div class="flex items-center gap-2 mb-2">
+          <i data-lucide="edit-3" class="w-5 h-5 text-blue-600"></i>
+          <h2 class="text-sm font-bold uppercase tracking-widest text-slate-400">Assumptions & Inputs</h2>
+        </div>
 
-    <section class="card">
-      <h2 class="section-title">Area</h2>
-      <div class="grid">
-        <label>
-          Area
-          <input type="number" id="area" value="0" min="0" step="0.01" />
-        </label>
-        <label>
-          K2 coefficient
-          <input type="number" id="k2" value="0" min="0" step="0.01" />
-        </label>
-        <label>
-          Buildable area K2
-          <input type="number" id="buildable" value="0" readonly />
-        </label>
-      </div>
-      <div class="grid" style="margin-top: 12px;">
-        <label>
-          Flat area
-          <input type="number" id="flatArea" value="0" readonly />
-        </label>
-        <label>
-          Commercial area
-          <input type="number" id="commercialArea" value="0" readonly />
-        </label>
-        <label>
-          Airs area
-          <input type="number" id="airsArea" value="0" readonly />
-        </label>
-        <label>
-          Stairs area
-          <input type="number" id="stairsArea" value="0" readonly />
-        </label>
-        <label>
-          Parking area
-          <input type="number" id="parkingArea" value="0" readonly />
-        </label>
-      </div>
-      <div class="grid" style="margin-top: 12px;">
-        <label>
-          Total building area
-          <input type="number" id="totalBuildingArea" value="0" readonly />
-        </label>
-      </div>
-    </section>
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm card-hover">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-slate-700">
+            <i data-lucide="maximize" class="w-4 h-4 text-blue-500"></i> Land & Density
+          </h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1">
+              <label class="text-[10px] font-black text-slate-400 uppercase">Total Area (m²)</label>
+              <input type="number" id="area" value="1000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-lg font-semibold focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div class="space-y-1">
+              <label class="text-[10px] font-black text-slate-400 uppercase">K2 Coefficient</label>
+              <input type="number" id="k2" value="2.5" step="0.1" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-lg font-semibold focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+          </div>
+        </div>
 
-    <section class="card">
-      <h2 class="section-title">Revenues</h2>
-      <div class="grid">
-        <label>
-          Flat revenue
-          <input type="number" id="flatRevenue" value="0" readonly />
-        </label>
-        <label>
-          Commercial revenue
-          <input type="number" id="commercialRevenue" value="0" readonly />
-        </label>
-        <label>
-          Parking revenue
-          <input type="number" id="parkingRevenue" value="0" readonly />
-        </label>
-        <label>
-          Total revenue
-          <input type="number" id="totalRevenue" value="0" readonly />
-        </label>
-      </div>
-    </section>
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm card-hover">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-slate-700">
+            <i data-lucide="dollar-sign" class="w-4 h-4 text-blue-500"></i> Market Values (Excl. VAT)
+          </h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1">
+              <label class="text-[10px] font-black text-slate-400 uppercase">Flat Price / m²</label>
+              <input type="number" id="flatPrice" value="1400" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-semibold focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div class="space-y-1">
+              <label class="text-[10px] font-black text-slate-400 uppercase">Comm. Price / m²</label>
+              <input type="number" id="commercialPrice" value="1650" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-semibold focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div class="space-y-1">
+              <label class="text-[10px] font-black text-slate-400 uppercase">Parking Price</label>
+              <input type="number" id="parkingPrice" value="6000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-semibold focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div class="space-y-1">
+              <label class="text-[10px] font-black text-slate-400 uppercase">Build Cost / m²</label>
+              <input type="number" id="costsPerM2" value="300" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-semibold focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+          </div>
+        </div>
 
-    <section class="card">
-      <h2 class="section-title">Profit</h2>
-      <div class="grid">
-        <label>
-          Profit
-          <input type="number" id="profit" value="0" readonly />
-        </label>
-        <label>
-          Development profit total
-          <input type="number" id="developmentProfitTotal" value="0" readonly />
-        </label>
-        <label>
-          Developer profit rate
-          <input type="number" id="developerProfitRate" value="0.3" min="0" step="0.01" />
-        </label>
-        <label>
-          Developer profit figure
-          <input type="number" id="developerProfitFigure" value="0" readonly />
-        </label>
-        <label class="highlight-value">
-          Land value
-          <input type="number" id="landValue" value="0" readonly />
-        </label>
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm card-hover">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-slate-700">
+            <i data-lucide="activity" class="w-4 h-4 text-blue-500"></i> Investment Checks
+          </h3>
+          <div class="space-y-4">
+            <div class="space-y-1">
+              <label class="text-[10px] font-black text-slate-400 uppercase">Actual Land Value (MV)</label>
+              <input type="number" id="actualLandMv" value="500000" class="w-full bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 text-lg font-bold text-blue-900 focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1">
+                  <label class="text-[10px] font-black text-slate-400 uppercase">Profit Rate (%)</label>
+                  <input type="number" id="developerProfitRate" value="0.3" step="0.05" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-semibold outline-none">
+                </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="grid" style="margin-top: 12px;">
-        <label>
-          Land value per m²
-          <input type="number" id="landValuePerM2" value="0" readonly />
-        </label>
-        <label>
-          Actual land price per m²
-          <input type="number" id="actualLandPricePerM2" value="0" readonly />
-        </label>
-        <label>
-          Actual land MV
-          <input type="number" id="actualLandMv" value="0" min="0" step="0.01" />
-        </label>
+
+      <div class="lg:col-span-7 space-y-6">
+        <div class="flex items-center gap-2 mb-2">
+          <i data-lucide="bar-chart-3" class="w-5 h-5 text-green-600"></i>
+          <h2 class="text-sm font-bold uppercase tracking-widest text-slate-400">Calculated Results</h2>
+        </div>
+
+        <div class="bg-slate-900 rounded-3xl p-8 text-white shadow-xl">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Residual Land Value</p>
+              <h2 id="landValue_display" class="text-5xl font-black tracking-tighter">$0</h2>
+              <div class="mt-2 text-slate-400 text-sm">
+                Per m²: <span id="landValuePerM2_display" class="text-white font-bold"></span>
+              </div>
+            </div>
+            <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700">
+              <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">Residual vs Actual Land Value (%)</p>
+              <h3 id="landDiff_display" class="text-3xl font-black">0.0%</h3>
+              <p id="gap_status" class="text-[10px] font-bold uppercase mt-2 px-2 py-1 rounded bg-slate-700 inline-block">Neutral</p>
+            </div>
+          </div>
+          <input type="hidden" id="landValue"><input type="hidden" id="landValuePerM2">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+            <h4 class="text-xs font-bold text-slate-400 uppercase mb-4 tracking-wider flex items-center gap-2">
+              <i data-lucide="pie-chart" class="w-3 h-3 text-blue-500"></i> Area Allocation
+            </h4>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-100">
+                <span class="text-xs font-bold text-slate-500">Buildable K2</span>
+                <input id="buildable" readonly class="bg-transparent text-right font-bold w-24 outline-none">
+              </div>
+              <div class="flex justify-between items-center px-1">
+                <span class="text-xs text-slate-500 font-medium">Flat Net Area</span>
+                <input id="flatArea" readonly class="bg-transparent text-right font-bold w-24 outline-none text-slate-700">
+              </div>
+              <div class="flex justify-between items-center px-1">
+                <span class="text-xs text-slate-500 font-medium">Comm. Area</span>
+                <input id="commercialArea" readonly class="bg-transparent text-right font-bold w-24 outline-none text-slate-700">
+              </div>
+              <div class="flex justify-between items-center border-t border-slate-100 pt-3 px-1">
+                <span class="text-xs font-bold text-blue-600 uppercase">Total Building</span>
+                <input id="totalBuildingArea" readonly class="bg-transparent text-right font-black w-24 outline-none text-blue-600">
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+            <h4 class="text-xs font-bold text-slate-400 uppercase mb-4 tracking-wider flex items-center gap-2">
+              <i data-lucide="trending-up" class="w-3 h-3 text-green-500"></i> Financials
+            </h4>
+            <div class="space-y-3">
+               <div class="flex justify-between items-center bg-green-50 p-3 rounded-lg border border-green-100">
+                <span class="text-xs font-bold text-green-700">Total Revenue</span>
+                <input id="totalRevenue" readonly class="bg-transparent text-right font-black w-32 outline-none text-green-800">
+              </div>
+              <div class="flex justify-between items-center px-1">
+                <span class="text-xs text-slate-500 font-medium">Construction</span>
+                <input id="constructionCosts" readonly class="bg-transparent text-right font-bold w-32 outline-none text-red-500">
+              </div>
+              <div class="flex justify-between items-center px-1">
+                <span class="text-xs text-slate-500 font-medium italic">Actual Profit % Real</span>
+                <div class="flex items-center gap-1 font-black text-slate-700">
+                   <input id="devProfitRealPercent" readonly class="bg-transparent text-right w-12 outline-none">%
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+           <p class="text-[10px] font-black text-slate-400 uppercase mb-4 text-center tracking-[0.2em]">Revenue Distribution Breakdown</p>
+           <div class="grid grid-cols-3 gap-6 divide-x divide-slate-100">
+              <div class="text-center px-2">
+                <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Flats</p>
+                <input id="flatRevenue" readonly class="bg-transparent text-center font-bold text-base w-full outline-none">
+              </div>
+              <div class="text-center px-2">
+                <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Commercial</p>
+                <input id="commercialRevenue" readonly class="bg-transparent text-center font-bold text-base w-full outline-none">
+              </div>
+              <div class="text-center px-2">
+                <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Parking</p>
+                <input id="parkingRevenue" readonly class="bg-transparent text-center font-bold text-base w-full outline-none">
+              </div>
+           </div>
+        </div>
+
       </div>
-      <div class="grid" style="margin-top: 12px;">
-        <label>
-          Dev. profit real
-          <input type="number" id="devProfitReal" value="0" readonly />
-        </label>
-        <label>
-          Dev. profit % real
-          <input type="number" id="devProfitRealPercent" value="0" readonly />
-        </label>
-      </div>
-      <p class="hint">Edit any input and the residual calculations will update automatically.</p>
-    </section>
+    </div>
   </main>
 
+  <input type="hidden" id="airsArea"><input type="hidden" id="stairsArea"><input type="hidden" id="parkingArea">
+  <input type="hidden" id="gaCosts"><input type="hidden" id="interestExpenses"><input type="hidden" id="profit"><input type="hidden" id="developerProfitFigure"><input type="hidden" id="actualLandPricePerM2"><input type="hidden" id="devProfitReal"><input type="hidden" id="developmentProfitTotal">
+
   <script>
-    const fields = {
-      area: document.getElementById("area"),
-      k2: document.getElementById("k2"),
-      buildable: document.getElementById("buildable"),
-      flatArea: document.getElementById("flatArea"),
-      commercialArea: document.getElementById("commercialArea"),
-      airsArea: document.getElementById("airsArea"),
-      stairsArea: document.getElementById("stairsArea"),
-      parkingArea: document.getElementById("parkingArea"),
-      totalBuildingArea: document.getElementById("totalBuildingArea"),
-      costsPerM2: document.getElementById("costsPerM2"),
-      constructionCosts: document.getElementById("constructionCosts"),
-      gaCosts: document.getElementById("gaCosts"),
-      interestExpenses: document.getElementById("interestExpenses"),
-      flatPrice: document.getElementById("flatPrice"),
-      commercialPrice: document.getElementById("commercialPrice"),
-      parkingPrice: document.getElementById("parkingPrice"),
-      flatRevenue: document.getElementById("flatRevenue"),
-      commercialRevenue: document.getElementById("commercialRevenue"),
-      parkingRevenue: document.getElementById("parkingRevenue"),
-      totalRevenue: document.getElementById("totalRevenue"),
-      profit: document.getElementById("profit"),
-      developmentProfitTotal: document.getElementById("developmentProfitTotal"),
-      developerProfitRate: document.getElementById("developerProfitRate"),
-      developerProfitFigure: document.getElementById("developerProfitFigure"),
-      landValue: document.getElementById("landValue"),
-      landValuePerM2: document.getElementById("landValuePerM2"),
-      actualLandPricePerM2: document.getElementById("actualLandPricePerM2"),
-      actualLandMv: document.getElementById("actualLandMv"),
-      devProfitReal: document.getElementById("devProfitReal"),
-      devProfitRealPercent: document.getElementById("devProfitRealPercent"),
-    };
+    lucide.createIcons();
+
+    const fields = {};
+    [
+      "area", "k2", "buildable", "flatArea", "commercialArea", "airsArea", "stairsArea", "parkingArea", 
+      "totalBuildingArea", "costsPerM2", "constructionCosts", "gaCosts", "interestExpenses", 
+      "flatPrice", "commercialPrice", "parkingPrice", "flatRevenue", "commercialRevenue", 
+      "parkingRevenue", "totalRevenue", "profit", "developmentProfitTotal", "developerProfitRate", 
+      "developerProfitFigure", "landValue", "landValuePerM2", "actualLandPricePerM2", "actualLandMv", 
+      "devProfitReal", "devProfitRealPercent"
+    ].forEach(id => fields[id] = document.getElementById(id));
+
+    const displayLand = document.getElementById('landValue_display');
+    const displayLandM2 = document.getElementById('landValuePerM2_display');
+    const displayLandDiff = document.getElementById('landDiff_display');
+    const statusBox = document.getElementById('gap_status');
 
     const toNumber = (value) => Number.parseFloat(value) || 0;
+    const formatCurrency = (val) => new Intl.NumberFormat('en-US').format(Math.round(val));
 
     const update = () => {
       const area = toNumber(fields.area.value);
       const k2 = toNumber(fields.k2.value);
       const buildable = area * k2;
-      fields.buildable.value = buildable.toFixed(2);
+      fields.buildable.value = buildable.toLocaleString() + " m²";
 
       const flatArea = buildable * 0.7;
       const commercialArea = buildable * 0.1;
@@ -337,74 +229,69 @@
       const stairsArea = buildable * 0.15;
       const parkingArea = flatArea === 0 ? 0 : flatArea / 150;
 
-      fields.flatArea.value = flatArea.toFixed(2);
-      fields.commercialArea.value = commercialArea.toFixed(2);
-      fields.airsArea.value = airsArea.toFixed(2);
-      fields.stairsArea.value = stairsArea.toFixed(2);
-      fields.parkingArea.value = parkingArea.toFixed(2);
-
-      const totalBuildingArea =
-        flatArea + commercialArea + airsArea + parkingArea * 25;
-      fields.totalBuildingArea.value = totalBuildingArea.toFixed(2);
-
-      const costsPerM2 = toNumber(fields.costsPerM2.value);
-      const constructionCosts = totalBuildingArea * costsPerM2;
-      fields.constructionCosts.value = constructionCosts.toFixed(2);
+      fields.flatArea.value = Math.round(flatArea).toLocaleString();
+      fields.commercialArea.value = Math.round(commercialArea).toLocaleString();
+      const totalBuildingArea = flatArea + commercialArea + airsArea + parkingArea * 25;
+      fields.totalBuildingArea.value = Math.round(totalBuildingArea).toLocaleString() + " m²";
 
       const flatPrice = toNumber(fields.flatPrice.value);
-      const commercialPrice = flatPrice * 1.15;
+      const commercialPrice = toNumber(fields.commercialPrice.value);
       const parkingPrice = toNumber(fields.parkingPrice.value);
-
-      fields.commercialPrice.value = commercialPrice.toFixed(2);
 
       const flatRevenue = (flatArea + airsArea) * flatPrice;
       const commercialRevenue = commercialArea * commercialPrice;
       const parkingRevenue = parkingArea * parkingPrice;
 
-      fields.flatRevenue.value = flatRevenue.toFixed(2);
-      fields.commercialRevenue.value = commercialRevenue.toFixed(2);
-      fields.parkingRevenue.value = parkingRevenue.toFixed(2);
+      fields.flatRevenue.value = "$" + formatCurrency(flatRevenue);
+      fields.commercialRevenue.value = "$" + formatCurrency(commercialRevenue);
+      fields.parkingRevenue.value = "$" + formatCurrency(parkingRevenue);
 
       const totalRevenue = flatRevenue + commercialRevenue + parkingRevenue;
-      fields.totalRevenue.value = totalRevenue.toFixed(2);
+      fields.totalRevenue.value = "$" + formatCurrency(totalRevenue);
 
-      const profit = totalRevenue - constructionCosts;
-      fields.profit.value = profit.toFixed(2);
+      const costsPerM2 = toNumber(fields.costsPerM2.value);
+      const constructionCosts = totalBuildingArea * costsPerM2;
+      fields.constructionCosts.value = "$" + formatCurrency(constructionCosts);
 
       const gaCosts = totalRevenue * 0.08;
       const interestExpenses = constructionCosts * 0.1;
-      fields.gaCosts.value = gaCosts.toFixed(2);
-      fields.interestExpenses.value = interestExpenses.toFixed(2);
-      const developmentProfitTotal =
-        (profit - gaCosts - interestExpenses) * 0.7;
-      fields.developmentProfitTotal.value = developmentProfitTotal.toFixed(2);
-
-      const developerProfitRate = toNumber(fields.developerProfitRate.value);
-      const developerProfitFigure = developmentProfitTotal * developerProfitRate;
-      fields.developerProfitFigure.value = developerProfitFigure.toFixed(2);
-
-      const landValue = developmentProfitTotal - developerProfitFigure;
-      fields.landValue.value = landValue.toFixed(2);
-
+      const devProfitTotal = (totalRevenue - constructionCosts - gaCosts - interestExpenses) * 0.7;
+      
+      const profitRate = toNumber(fields.developerProfitRate.value);
+      const devProfitFigure = devProfitTotal * profitRate;
+      
+      const landValue = devProfitTotal - devProfitFigure;
       const landValuePerM2 = area === 0 ? 0 : landValue / area;
-      fields.landValuePerM2.value = landValuePerM2.toFixed(2);
 
-      const actualLandMv = toNumber(fields.actualLandMv.value);
-      const actualLandPricePerM2 = area === 0 ? 0 : actualLandMv / area;
-      fields.actualLandPricePerM2.value = actualLandPricePerM2.toFixed(2);
+      // PERCENTAGE DIFFERENCE CALCULATION
+      const actualMV = toNumber(fields.actualLandMv.value);
+      const diffPct = actualMV === 0 ? 0 : ((landValue / actualMV) - 1) * 100;
 
-      const devProfitReal = developmentProfitTotal - actualLandMv;
-      fields.devProfitReal.value = devProfitReal.toFixed(2);
+      displayLand.innerText = "$" + formatCurrency(landValue);
+      displayLandM2.innerText = "$" + formatCurrency(landValuePerM2);
+      
+      // Update Percentage Display
+      displayLandDiff.innerText = (diffPct >= 0 ? "+" : "") + diffPct.toFixed(1) + "%";
+      displayLandDiff.className = `text-3xl font-black ${diffPct >= 0 ? 'text-green-400' : 'text-red-400'}`;
+      
+      if (diffPct > 2) {
+        statusBox.innerText = "Residual > Actual Land";
+        statusBox.className = "text-[10px] font-bold uppercase mt-2 px-2 py-1 rounded bg-green-500/20 text-green-400 border border-green-500/30";
+      } else if (diffPct < -2) {
+        statusBox.innerText = "Residual < Actual Land";
+        statusBox.className = "text-[10px] font-bold uppercase mt-2 px-2 py-1 rounded bg-red-500/20 text-red-400 border border-red-500/30";
+      } else {
+        statusBox.innerText = "Neutral / At Market";
+        statusBox.className = "text-[10px] font-bold uppercase mt-2 px-2 py-1 rounded bg-slate-700 text-slate-300";
+      }
 
-      const devProfitRealPercent =
-        developerProfitFigure === 0
-          ? 0
-          : (devProfitReal / developerProfitFigure - 1) * 100;
-      fields.devProfitRealPercent.value = devProfitRealPercent.toFixed(2);
+      const devProfitReal = devProfitTotal - actualMV;
+      const realPercent = devProfitFigure === 0 ? 0 : (devProfitReal / devProfitFigure - 1) * 100;
+      fields.devProfitRealPercent.value = realPercent.toFixed(1);
     };
 
     Object.values(fields).forEach((field) => {
-      if (!field.hasAttribute("readonly")) {
+      if (field && !field.hasAttribute("readonly")) {
         field.addEventListener("input", update);
       }
     });

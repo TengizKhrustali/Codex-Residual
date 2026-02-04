@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Residual Testing Calculator</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --border: #d7dde5;
+      --muted: #6b7280;
+      --accent: #1f6feb;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: #111827;
+    }
+
+    header {
+      padding: 24px 32px 8px;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 1.6rem;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    main {
+      padding: 24px 32px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 1100px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      margin: 0 0 12px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    input {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 0.95rem;
+    }
+
+    input[readonly] {
+      background: #eef2f7;
+      color: #111827;
+    }
+
+    .hint {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .totals {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(31, 111, 235, 0.1);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Residual Testing</h1>
+    <p>Input project assumptions and review calculated outputs from the residual model.</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2 class="section-title">Area</h2>
+      <div class="grid">
+        <label>
+          Area
+          <input type="number" id="area" value="0" min="0" step="0.01" />
+        </label>
+        <label>
+          K2 coefficient
+          <input type="number" id="k2" value="0" min="0" step="0.01" />
+        </label>
+        <label>
+          Buildable area K2
+          <input type="number" id="buildable" value="0" readonly />
+        </label>
+      </div>
+      <div class="grid" style="margin-top: 12px;">
+        <label>
+          Flat area
+          <input type="number" id="flatArea" value="0" min="0" step="0.01" />
+        </label>
+        <label>
+          Commercial area
+          <input type="number" id="commercialArea" value="0" min="0" step="0.01" />
+        </label>
+        <label>
+          Airs area
+          <input type="number" id="airsArea" value="0" min="0" step="0.01" />
+        </label>
+        <label>
+          Stairs area
+          <input type="number" id="stairsArea" value="0" min="0" step="0.01" />
+        </label>
+        <label>
+          Parking area
+          <input type="number" id="parkingArea" value="0" min="0" step="0.01" />
+        </label>
+      </div>
+      <div class="grid" style="margin-top: 12px;">
+        <label>
+          Total building area
+          <input type="number" id="totalBuildingArea" value="0" readonly />
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Costs</h2>
+      <div class="grid">
+        <label>
+          Costs per m²
+          <input type="number" id="costsPerM2" value="300" min="0" step="0.01" />
+        </label>
+        <label>
+          Construction costs
+          <input type="number" id="constructionCosts" value="0" readonly />
+        </label>
+      </div>
+      <div class="grid" style="margin-top: 12px;">
+        <label>
+          G&amp;A costs incl. marketing
+          <input type="number" id="gaCosts" value="0" min="0" step="0.01" />
+        </label>
+        <label>
+          Interest expenses
+          <input type="number" id="interestExpenses" value="0" min="0" step="0.01" />
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Variables</h2>
+      <div class="grid">
+        <label>
+          Flat price
+          <input type="number" id="flatPrice" value="1400" min="0" step="0.01" />
+        </label>
+        <label>
+          Commercial price
+          <input type="number" id="commercialPrice" value="1400" min="0" step="0.01" />
+        </label>
+        <label>
+          Parking price
+          <input type="number" id="parkingPrice" value="6000" min="0" step="0.01" />
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Revenues</h2>
+      <div class="grid">
+        <label>
+          Flat revenue
+          <input type="number" id="flatRevenue" value="0" readonly />
+        </label>
+        <label>
+          Commercial revenue
+          <input type="number" id="commercialRevenue" value="0" readonly />
+        </label>
+        <label>
+          Parking revenue
+          <input type="number" id="parkingRevenue" value="0" readonly />
+        </label>
+        <label>
+          Total revenue
+          <input type="number" id="totalRevenue" value="0" readonly />
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Profit</h2>
+      <div class="grid">
+        <label>
+          Profit
+          <input type="number" id="profit" value="0" readonly />
+        </label>
+        <label>
+          Development profit total
+          <input type="number" id="developmentProfitTotal" value="0" readonly />
+        </label>
+        <label>
+          Developer profit rate
+          <input type="number" id="developerProfitRate" value="30" min="0" step="0.01" />
+        </label>
+        <label>
+          Developer profit figure
+          <input type="number" id="developerProfitFigure" value="0" readonly />
+        </label>
+        <label>
+          Land value
+          <input type="number" id="landValue" value="0" readonly />
+        </label>
+      </div>
+      <div class="grid" style="margin-top: 12px;">
+        <label>
+          Land value per m²
+          <input type="number" id="landValuePerM2" value="0" readonly />
+        </label>
+        <label>
+          Actual land price per m²
+          <input type="number" id="actualLandPricePerM2" value="0" min="0" step="0.01" />
+        </label>
+        <label>
+          Actual land MV
+          <input type="number" id="actualLandMv" value="0" readonly />
+        </label>
+      </div>
+      <div class="grid" style="margin-top: 12px;">
+        <label>
+          Dev. profit real
+          <input type="number" id="devProfitReal" value="0" readonly />
+        </label>
+        <label>
+          Dev. profit % real
+          <input type="number" id="devProfitRealPercent" value="0" readonly />
+        </label>
+      </div>
+      <p class="hint">Edit any input and the residual calculations will update automatically.</p>
+    </section>
+  </main>
+
+  <script>
+    const fields = {
+      area: document.getElementById("area"),
+      k2: document.getElementById("k2"),
+      buildable: document.getElementById("buildable"),
+      flatArea: document.getElementById("flatArea"),
+      commercialArea: document.getElementById("commercialArea"),
+      airsArea: document.getElementById("airsArea"),
+      stairsArea: document.getElementById("stairsArea"),
+      parkingArea: document.getElementById("parkingArea"),
+      totalBuildingArea: document.getElementById("totalBuildingArea"),
+      costsPerM2: document.getElementById("costsPerM2"),
+      constructionCosts: document.getElementById("constructionCosts"),
+      gaCosts: document.getElementById("gaCosts"),
+      interestExpenses: document.getElementById("interestExpenses"),
+      flatPrice: document.getElementById("flatPrice"),
+      commercialPrice: document.getElementById("commercialPrice"),
+      parkingPrice: document.getElementById("parkingPrice"),
+      flatRevenue: document.getElementById("flatRevenue"),
+      commercialRevenue: document.getElementById("commercialRevenue"),
+      parkingRevenue: document.getElementById("parkingRevenue"),
+      totalRevenue: document.getElementById("totalRevenue"),
+      profit: document.getElementById("profit"),
+      developmentProfitTotal: document.getElementById("developmentProfitTotal"),
+      developerProfitRate: document.getElementById("developerProfitRate"),
+      developerProfitFigure: document.getElementById("developerProfitFigure"),
+      landValue: document.getElementById("landValue"),
+      landValuePerM2: document.getElementById("landValuePerM2"),
+      actualLandPricePerM2: document.getElementById("actualLandPricePerM2"),
+      actualLandMv: document.getElementById("actualLandMv"),
+      devProfitReal: document.getElementById("devProfitReal"),
+      devProfitRealPercent: document.getElementById("devProfitRealPercent"),
+    };
+
+    const toNumber = (value) => Number.parseFloat(value) || 0;
+
+    const update = () => {
+      const area = toNumber(fields.area.value);
+      const k2 = toNumber(fields.k2.value);
+      const buildable = area * k2;
+      fields.buildable.value = buildable.toFixed(2);
+
+      const flatArea = toNumber(fields.flatArea.value);
+      const commercialArea = toNumber(fields.commercialArea.value);
+      const airsArea = toNumber(fields.airsArea.value);
+      const stairsArea = toNumber(fields.stairsArea.value);
+      const parkingArea = toNumber(fields.parkingArea.value);
+
+      const totalBuildingArea =
+        flatArea + commercialArea + airsArea + stairsArea + parkingArea;
+      fields.totalBuildingArea.value = totalBuildingArea.toFixed(2);
+
+      const costsPerM2 = toNumber(fields.costsPerM2.value);
+      const constructionCosts = totalBuildingArea * costsPerM2;
+      fields.constructionCosts.value = constructionCosts.toFixed(2);
+
+      const flatPrice = toNumber(fields.flatPrice.value);
+      const commercialPrice = toNumber(fields.commercialPrice.value);
+      const parkingPrice = toNumber(fields.parkingPrice.value);
+
+      const flatRevenue = flatArea * flatPrice;
+      const commercialRevenue = commercialArea * commercialPrice;
+      const parkingRevenue = parkingArea * parkingPrice;
+
+      fields.flatRevenue.value = flatRevenue.toFixed(2);
+      fields.commercialRevenue.value = commercialRevenue.toFixed(2);
+      fields.parkingRevenue.value = parkingRevenue.toFixed(2);
+
+      const totalRevenue = flatRevenue + commercialRevenue + parkingRevenue;
+      fields.totalRevenue.value = totalRevenue.toFixed(2);
+
+      const profit = totalRevenue - constructionCosts;
+      fields.profit.value = profit.toFixed(2);
+
+      const gaCosts = toNumber(fields.gaCosts.value);
+      const interestExpenses = toNumber(fields.interestExpenses.value);
+      const developmentProfitTotal = profit - gaCosts - interestExpenses;
+      fields.developmentProfitTotal.value = developmentProfitTotal.toFixed(2);
+
+      const developerProfitRate =
+        toNumber(fields.developerProfitRate.value) / 100;
+      const developerProfitFigure = developmentProfitTotal * developerProfitRate;
+      fields.developerProfitFigure.value = developerProfitFigure.toFixed(2);
+
+      const landValue =
+        totalRevenue -
+        constructionCosts -
+        gaCosts -
+        interestExpenses -
+        developerProfitFigure;
+      fields.landValue.value = landValue.toFixed(2);
+
+      const landValuePerM2 = area === 0 ? 0 : landValue / area;
+      fields.landValuePerM2.value = landValuePerM2.toFixed(2);
+
+      const actualLandPricePerM2 = toNumber(fields.actualLandPricePerM2.value);
+      const actualLandMv = actualLandPricePerM2 * area;
+      fields.actualLandMv.value = actualLandMv.toFixed(2);
+
+      const devProfitReal =
+        totalRevenue -
+        constructionCosts -
+        gaCosts -
+        interestExpenses -
+        actualLandMv;
+      fields.devProfitReal.value = devProfitReal.toFixed(2);
+
+      const devProfitRealPercent =
+        totalRevenue === 0 ? 0 : (devProfitReal / totalRevenue) * 100;
+      fields.devProfitRealPercent.value = devProfitRealPercent.toFixed(2);
+    };
+
+    Object.values(fields).forEach((field) => {
+      if (!field.hasAttribute("readonly")) {
+        field.addEventListener("input", update);
+      }
+    });
+
+    update();
+  </script>
+</body>
+</html>

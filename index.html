@@ -77,6 +77,12 @@
       font-size: 0.95rem;
     }
 
+    input:not([readonly]) {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(31, 111, 235, 0.1);
+      background: #f9fbff;
+    }
+
     input[readonly] {
       background: #eef2f7;
       color: #111827;
@@ -105,6 +111,13 @@
       font-weight: 600;
       font-size: 0.85rem;
     }
+
+    .highlight-value input {
+      background: rgba(31, 111, 235, 0.12);
+      border-color: var(--accent);
+      color: #0f172a;
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -114,6 +127,48 @@
   </header>
 
   <main>
+    <section class="card">
+      <h2 class="section-title">Costs</h2>
+      <div class="grid">
+        <label>
+          Costs per m²
+          <input type="number" id="costsPerM2" value="300" min="0" step="0.01" />
+        </label>
+        <label>
+          Construction costs
+          <input type="number" id="constructionCosts" value="0" readonly />
+        </label>
+      </div>
+      <div class="grid" style="margin-top: 12px;">
+        <label>
+          G&amp;A costs incl. marketing
+          <input type="number" id="gaCosts" value="0" readonly />
+        </label>
+        <label>
+          Interest expenses
+          <input type="number" id="interestExpenses" value="0" readonly />
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Variables</h2>
+      <div class="grid">
+        <label>
+          Flat price
+          <input type="number" id="flatPrice" value="1400" min="0" step="0.01" />
+        </label>
+        <label>
+          Commercial price
+          <input type="number" id="commercialPrice" value="1400" readonly />
+        </label>
+        <label>
+          Parking price
+          <input type="number" id="parkingPrice" value="6000" min="0" step="0.01" />
+        </label>
+      </div>
+    </section>
+
     <section class="card">
       <h2 class="section-title">Area</h2>
       <div class="grid">
@@ -161,48 +216,6 @@
     </section>
 
     <section class="card">
-      <h2 class="section-title">Costs</h2>
-      <div class="grid">
-        <label>
-          Costs per m²
-          <input type="number" id="costsPerM2" value="300" min="0" step="0.01" />
-        </label>
-        <label>
-          Construction costs
-          <input type="number" id="constructionCosts" value="0" readonly />
-        </label>
-      </div>
-      <div class="grid" style="margin-top: 12px;">
-        <label>
-          G&amp;A costs incl. marketing
-          <input type="number" id="gaCosts" value="0" readonly />
-        </label>
-        <label>
-          Interest expenses
-          <input type="number" id="interestExpenses" value="0" readonly />
-        </label>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2 class="section-title">Variables</h2>
-      <div class="grid">
-        <label>
-          Flat price
-          <input type="number" id="flatPrice" value="1400" min="0" step="0.01" />
-        </label>
-        <label>
-          Commercial price
-          <input type="number" id="commercialPrice" value="1400" readonly />
-        </label>
-        <label>
-          Parking price
-          <input type="number" id="parkingPrice" value="6000" min="0" step="0.01" />
-        </label>
-      </div>
-    </section>
-
-    <section class="card">
       <h2 class="section-title">Revenues</h2>
       <div class="grid">
         <label>
@@ -243,7 +256,7 @@
           Developer profit figure
           <input type="number" id="developerProfitFigure" value="0" readonly />
         </label>
-        <label>
+        <label class="highlight-value">
           Land value
           <input type="number" id="landValue" value="0" readonly />
         </label>

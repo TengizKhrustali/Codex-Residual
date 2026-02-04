@@ -339,12 +339,12 @@
       fields.constructionCosts.value = constructionCosts.toFixed(2);
 
       const flatPrice = toNumber(fields.flatPrice.value);
-      const commercialPrice = flatPrice;
+      const commercialPrice = flatPrice * 1.15;
       const parkingPrice = toNumber(fields.parkingPrice.value);
 
       fields.commercialPrice.value = commercialPrice.toFixed(2);
 
-      const flatRevenue = flatArea * flatPrice;
+      const flatRevenue = (flatArea + airsArea) * flatPrice;
       const commercialRevenue = commercialArea * commercialPrice;
       const parkingRevenue = parkingArea * parkingPrice;
 
